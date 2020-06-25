@@ -1,0 +1,16 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/grpc-interop
+grpc-interop.so
+grpc-interop.dylib
+grpc-interop.dll
+grpc-interop.a
+grpc-interop.lib
+grpc-interop-test-*
+*.exe
+*.o
+*.obj
+*.lst
+*.a

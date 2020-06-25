@@ -1,0 +1,7 @@
+name "grpc-d-interop"
+description "A minimal layer to help interfacing between C and D for gRPC"
+authors "Harrison Ford"
+targetType "library"
+libraries "grpc"
+copyright "Copyright © 2019, Harrison Ford"
+license "proprietary"
