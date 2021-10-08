@@ -1,6 +1,7 @@
 module interop.headers;
 import core.stdc.config;
 import core.stdc.stdarg: va_list;
+import core.sys.posix.pthread;
 static import core.simd;
 static import std.conv;
 
@@ -50,56 +51,12 @@ struct dpp {
 
 extern(C)
 {
+    alias int32_t = int;
+    alias uint32_t = uint;
+    alias uint8_t = ubyte;
     alias wchar_t = int;
     alias size_t = c_ulong;
     alias ptrdiff_t = c_long;
-    struct max_align_t
-    {
-        long __clang_max_align_nonce1;
-        real __clang_max_align_nonce2;
-    }
-    int getdate_r(const(char)*, tm*) @nogc nothrow;
-    tm* getdate(const(char)*) @nogc nothrow;
-    extern __gshared int getdate_err;
-    int timespec_get(timespec*, int) @nogc nothrow;
-    int timer_getoverrun(void*) @nogc nothrow;
-    int timer_gettime(void*, itimerspec*) @nogc nothrow;
-    int timer_settime(void*, int, const(itimerspec)*, itimerspec*) @nogc nothrow;
-    int timer_delete(void*) @nogc nothrow;
-    int timer_create(int, sigevent*, void**) @nogc nothrow;
-    int clock_getcpuclockid(int, int*) @nogc nothrow;
-    int clock_nanosleep(int, int, const(timespec)*, timespec*) @nogc nothrow;
-    int clock_settime(int, const(timespec)*) @nogc nothrow;
-    int clock_gettime(int, timespec*) @nogc nothrow;
-    int clock_getres(int, timespec*) @nogc nothrow;
-    int nanosleep(const(timespec)*, timespec*) @nogc nothrow;
-    int dysize(int) @nogc nothrow;
-    c_long timelocal(tm*) @nogc nothrow;
-    c_long timegm(tm*) @nogc nothrow;
-    extern __gshared c_long timezone;
-    extern __gshared int daylight;
-    void tzset() @nogc nothrow;
-    extern __gshared char*[2] tzname;
-    extern __gshared c_long __timezone;
-    extern __gshared int __daylight;
-    extern __gshared char*[2] __tzname;
-    char* ctime_r(const(c_long)*, char*) @nogc nothrow;
-    char* asctime_r(const(tm)*, char*) @nogc nothrow;
-    char* ctime(const(c_long)*) @nogc nothrow;
-    char* asctime(const(tm)*) @nogc nothrow;
-    tm* localtime_r(const(c_long)*, tm*) @nogc nothrow;
-    tm* gmtime_r(const(c_long)*, tm*) @nogc nothrow;
-    tm* localtime(const(c_long)*) @nogc nothrow;
-    tm* gmtime(const(c_long)*) @nogc nothrow;
-    char* strptime_l(const(char)*, const(char)*, tm*, __locale_struct*) @nogc nothrow;
-    c_ulong strftime_l(char*, c_ulong, const(char)*, const(tm)*, __locale_struct*) @nogc nothrow;
-    char* strptime(const(char)*, const(char)*, tm*) @nogc nothrow;
-    c_ulong strftime(char*, c_ulong, const(char)*, const(tm)*) @nogc nothrow;
-    c_long mktime(tm*) @nogc nothrow;
-    double difftime(c_long, c_long) @nogc nothrow;
-    c_long time(c_long*) @nogc nothrow;
-    c_long clock() @nogc nothrow;
-    struct sigevent;
     alias fsfilcnt64_t = c_ulong;
     alias fsblkcnt64_t = c_ulong;
     alias blkcnt64_t = c_long;
@@ -129,479 +86,13 @@ extern(C)
     alias ino64_t = c_ulong;
     alias ino_t = c_ulong;
     alias loff_t = c_long;
-    alias fsid_t = __fsid_t;
     alias u_quad_t = c_ulong;
     alias quad_t = c_long;
     alias u_long = c_ulong;
     alias u_int = uint;
     alias u_short = ushort;
     alias u_char = ubyte;
-    int pselect(int, fd_set*, fd_set*, fd_set*, const(timespec)*, const(__sigset_t)*) @nogc nothrow;
-    int select(int, fd_set*, fd_set*, fd_set*, timeval*) @nogc nothrow;
-    alias fd_mask = c_long;
-    struct fd_set
-    {
-        c_long[16] fds_bits;
-    }
-    alias __fd_mask = c_long;
-    pragma(mangle, "alloca") void* alloca_(c_ulong) @nogc nothrow;
-    static ushort __bswap_16(ushort) @nogc nothrow;
-    static uint __bswap_32(uint) @nogc nothrow;
-    static c_ulong __bswap_64(c_ulong) @nogc nothrow;
-    int getloadavg(double*, int) @nogc nothrow;
-    alias __cpu_mask = c_ulong;
-    int getpt() @nogc nothrow;
-    struct cpu_set_t
-    {
-        c_ulong[16] __bits;
-    }
-    int ptsname_r(int, char*, c_ulong) @nogc nothrow;
-    char* ptsname(int) @nogc nothrow;
-    int unlockpt(int) @nogc nothrow;
-    int grantpt(int) @nogc nothrow;
-    int __sched_cpucount(c_ulong, const(cpu_set_t)*) @nogc nothrow;
-    cpu_set_t* __sched_cpualloc(c_ulong) @nogc nothrow;
-    void __sched_cpufree(cpu_set_t*) @nogc nothrow;
-    int posix_openpt(int) @nogc nothrow;
-    int getsubopt(char**, char**, char**) @nogc nothrow;
-    int rpmatch(const(char)*) @nogc nothrow;
-    c_ulong wcstombs(char*, const(int)*, c_ulong) @nogc nothrow;
-    c_ulong mbstowcs(int*, const(char)*, c_ulong) @nogc nothrow;
-    int wctomb(char*, int) @nogc nothrow;
-    int mbtowc(int*, const(char)*, c_ulong) @nogc nothrow;
-    int mblen(const(char)*, c_ulong) @nogc nothrow;
-    int qfcvt_r(real, int, int*, int*, char*, c_ulong) @nogc nothrow;
-    alias _Float32 = float;
-    int qecvt_r(real, int, int*, int*, char*, c_ulong) @nogc nothrow;
-    int fcvt_r(double, int, int*, int*, char*, c_ulong) @nogc nothrow;
-    alias _Float64 = double;
-    int ecvt_r(double, int, int*, int*, char*, c_ulong) @nogc nothrow;
-    alias _Float32x = double;
-    char* qgcvt(real, int, char*) @nogc nothrow;
-    alias _Float64x = real;
-    char* qfcvt(real, int, int*, int*) @nogc nothrow;
-    char* qecvt(real, int, int*, int*) @nogc nothrow;
-    char* gcvt(double, int, char*) @nogc nothrow;
-    char* fcvt(double, int, int*, int*) @nogc nothrow;
-    char* ecvt(double, int, int*, int*) @nogc nothrow;
-    lldiv_t lldiv(long, long) @nogc nothrow;
-    ldiv_t ldiv(c_long, c_long) @nogc nothrow;
-    div_t div(int, int) @nogc nothrow;
-    long llabs(long) @nogc nothrow;
-    alias pthread_t = c_ulong;
-    union pthread_mutexattr_t
-    {
-        char[4] __size;
-        int __align;
-    }
-    union pthread_condattr_t
-    {
-        char[4] __size;
-        int __align;
-    }
-    alias pthread_key_t = uint;
-    alias pthread_once_t = int;
-    union pthread_attr_t
-    {
-        char[56] __size;
-        c_long __align;
-    }
-    union pthread_mutex_t
-    {
-        __pthread_mutex_s __data;
-        char[40] __size;
-        c_long __align;
-    }
-    union pthread_cond_t
-    {
-        __pthread_cond_s __data;
-        char[48] __size;
-        long __align;
-    }
-    union pthread_rwlock_t
-    {
-        __pthread_rwlock_arch_t __data;
-        char[56] __size;
-        c_long __align;
-    }
-    union pthread_rwlockattr_t
-    {
-        char[8] __size;
-        c_long __align;
-    }
-    alias pthread_spinlock_t = int;
-    union pthread_barrier_t
-    {
-        char[32] __size;
-        c_long __align;
-    }
-    union pthread_barrierattr_t
-    {
-        char[4] __size;
-        int __align;
-    }
-    c_long labs(c_long) @nogc nothrow;
-    int abs(int) @nogc nothrow;
-    void qsort_r(void*, c_ulong, c_ulong, int function(const(void)*, const(void)*, void*), void*) @nogc nothrow;
-    void qsort(void*, c_ulong, c_ulong, int function(const(void)*, const(void)*)) @nogc nothrow;
-    void* bsearch(const(void)*, const(void)*, c_ulong, c_ulong, int function(const(void)*, const(void)*)) @nogc nothrow;
-    alias __compar_d_fn_t = int function(const(void)*, const(void)*, void*);
-    alias comparison_fn_t = int function(const(void)*, const(void)*);
-    alias __compar_fn_t = int function(const(void)*, const(void)*);
-    char* realpath(const(char)*, char*) @nogc nothrow;
-    char* canonicalize_file_name(const(char)*) @nogc nothrow;
-    int system(const(char)*) @nogc nothrow;
-    int mkostemps64(char*, int, int) @nogc nothrow;
-    int clone(int function(void*), void*, int, void*, ...) @nogc nothrow;
-    int unshare(int) @nogc nothrow;
-    int sched_getcpu() @nogc nothrow;
-    int getcpu(uint*, uint*) @nogc nothrow;
-    int setns(int, int) @nogc nothrow;
-    int mkostemps(char*, int, int) @nogc nothrow;
-    alias __jmp_buf = c_long[8];
-    int mkostemp64(char*, int) @nogc nothrow;
-    alias int8_t = byte;
-    alias int16_t = short;
-    alias int32_t = int;
-    alias int64_t = c_long;
-    alias uint8_t = ubyte;
-    alias uint16_t = ushort;
-    alias uint32_t = uint;
-    alias uint64_t = ulong;
-    struct __pthread_mutex_s
-    {
-        int __lock;
-        uint __count;
-        int __owner;
-        uint __nusers;
-        int __kind;
-        short __spins;
-        short __elision;
-        __pthread_internal_list __list;
-    }
-    int mkostemp(char*, int) @nogc nothrow;
-    struct __pthread_rwlock_arch_t
-    {
-        uint __readers;
-        uint __writers;
-        uint __wrphase_futex;
-        uint __writers_futex;
-        uint __pad3;
-        uint __pad4;
-        int __cur_writer;
-        int __shared;
-        byte __rwelision;
-        ubyte[7] __pad1;
-        c_ulong __pad2;
-        uint __flags;
-    }
-    alias __pthread_list_t = __pthread_internal_list;
-    struct __pthread_internal_list
-    {
-        __pthread_internal_list* __prev;
-        __pthread_internal_list* __next;
-    }
-    alias __pthread_slist_t = __pthread_internal_slist;
-    struct __pthread_internal_slist
-    {
-        __pthread_internal_slist* __next;
-    }
-    struct __pthread_cond_s
-    {
-        static union _Anonymous_0
-        {
-            ulong __wseq;
-            static struct _Anonymous_1
-            {
-                uint __low;
-                uint __high;
-            }
-            _Anonymous_1 __wseq32;
-        }
-        _Anonymous_0 _anonymous_2;
-        auto __wseq() @property @nogc pure nothrow { return _anonymous_2.__wseq; }
-        void __wseq(_T_)(auto ref _T_ val) @property @nogc pure nothrow { _anonymous_2.__wseq = val; }
-        auto __wseq32() @property @nogc pure nothrow { return _anonymous_2.__wseq32; }
-        void __wseq32(_T_)(auto ref _T_ val) @property @nogc pure nothrow { _anonymous_2.__wseq32 = val; }
-        static union _Anonymous_3
-        {
-            ulong __g1_start;
-            static struct _Anonymous_4
-            {
-                uint __low;
-                uint __high;
-            }
-            _Anonymous_4 __g1_start32;
-        }
-        _Anonymous_3 _anonymous_5;
-        auto __g1_start() @property @nogc pure nothrow { return _anonymous_5.__g1_start; }
-        void __g1_start(_T_)(auto ref _T_ val) @property @nogc pure nothrow { _anonymous_5.__g1_start = val; }
-        auto __g1_start32() @property @nogc pure nothrow { return _anonymous_5.__g1_start32; }
-        void __g1_start32(_T_)(auto ref _T_ val) @property @nogc pure nothrow { _anonymous_5.__g1_start32 = val; }
-        uint[2] __g_refs;
-        uint[2] __g_size;
-        uint __g1_orig_size;
-        uint __wrefs;
-        uint[2] __g_signals;
-    }
-    char* mkdtemp(char*) @nogc nothrow;
-    int mkstemps64(char*, int) @nogc nothrow;
-    int mkstemps(char*, int) @nogc nothrow;
-    int mkstemp64(char*) @nogc nothrow;
-    int clock_adjtime(int, timex*) @nogc nothrow;
-    int mkstemp(char*) @nogc nothrow;
-    struct timex
-    {
-        import std.bitmanip: bitfields;
-
-        align(4):
-        uint modes;
-        c_long offset;
-        c_long freq;
-        c_long maxerror;
-        c_long esterror;
-        int status;
-        c_long constant;
-        c_long precision;
-        c_long tolerance;
-        timeval time;
-        c_long tick;
-        c_long ppsfreq;
-        c_long jitter;
-        int shift;
-        c_long stabil;
-        c_long jitcnt;
-        c_long calcnt;
-        c_long errcnt;
-        c_long stbcnt;
-        int tai;
-        mixin(bitfields!(
-            int, "_anonymous_6", 32,
-            int, "_anonymous_7", 32,
-        ));
-        mixin(bitfields!(
-            int, "_anonymous_8", 32,
-            int, "_anonymous_9", 32,
-        ));
-        mixin(bitfields!(
-            int, "_anonymous_10", 32,
-            int, "_anonymous_11", 32,
-        ));
-        mixin(bitfields!(
-            int, "_anonymous_12", 32,
-            int, "_anonymous_13", 32,
-        ));
-        mixin(bitfields!(
-            int, "_anonymous_14", 32,
-            int, "_anonymous_15", 32,
-        ));
-        mixin(bitfields!(
-            int, "_anonymous_16", 32,
-        ));
-    }
-    char* mktemp(char*) @nogc nothrow;
-    int clearenv() @nogc nothrow;
-    int unsetenv(const(char)*) @nogc nothrow;
-    int setenv(const(char)*, const(char)*, int) @nogc nothrow;
-    int putenv(char*) @nogc nothrow;
-    char* secure_getenv(const(char)*) @nogc nothrow;
-    char* getenv(const(char)*) @nogc nothrow;
-    void _Exit(int) @nogc nothrow;
-    void quick_exit(int) @nogc nothrow;
-    void exit(int) @nogc nothrow;
-    int on_exit(void function(int, void*), void*) @nogc nothrow;
-    alias __u_char = ubyte;
-    alias __u_short = ushort;
-    alias __u_int = uint;
-    alias __u_long = c_ulong;
-    alias __int8_t = byte;
-    alias __uint8_t = ubyte;
-    alias __int16_t = short;
-    alias __uint16_t = ushort;
-    alias __int32_t = int;
-    alias __uint32_t = uint;
-    alias __int64_t = c_long;
-    alias __uint64_t = c_ulong;
-    alias __int_least8_t = byte;
-    alias __uint_least8_t = ubyte;
-    alias __int_least16_t = short;
-    alias __uint_least16_t = ushort;
-    alias __int_least32_t = int;
-    alias __uint_least32_t = uint;
-    alias __int_least64_t = c_long;
-    alias __uint_least64_t = c_ulong;
-    alias __quad_t = c_long;
-    alias __u_quad_t = c_ulong;
-    alias __intmax_t = c_long;
-    alias __uintmax_t = c_ulong;
-    int at_quick_exit(void function()) @nogc nothrow;
-    int atexit(void function()) @nogc nothrow;
-    void abort() @nogc nothrow;
-    void* aligned_alloc(c_ulong, c_ulong) @nogc nothrow;
-    alias __dev_t = c_ulong;
-    alias __uid_t = uint;
-    alias __gid_t = uint;
-    alias __ino_t = c_ulong;
-    alias __ino64_t = c_ulong;
-    alias __mode_t = uint;
-    alias __nlink_t = c_ulong;
-    alias __off_t = c_long;
-    alias __off64_t = c_long;
-    alias __pid_t = int;
-    struct __fsid_t
-    {
-        int[2] __val;
-    }
-    alias __clock_t = c_long;
-    alias __rlim_t = c_ulong;
-    alias __rlim64_t = c_ulong;
-    alias __id_t = uint;
-    alias __time_t = c_long;
-    alias __useconds_t = uint;
-    alias __suseconds_t = c_long;
-    alias __daddr_t = int;
-    alias __key_t = int;
-    alias __clockid_t = int;
-    alias __timer_t = void*;
-    alias __blksize_t = c_long;
-    alias __blkcnt_t = c_long;
-    alias __blkcnt64_t = c_long;
-    alias __fsblkcnt_t = c_ulong;
-    alias __fsblkcnt64_t = c_ulong;
-    alias __fsfilcnt_t = c_ulong;
-    alias __fsfilcnt64_t = c_ulong;
-    alias __fsword_t = c_long;
-    alias __ssize_t = c_long;
-    alias __syscall_slong_t = c_long;
-    alias __syscall_ulong_t = c_ulong;
-    alias __loff_t = c_long;
-    alias __caddr_t = char*;
-    alias __intptr_t = c_long;
-    alias __socklen_t = uint;
-    alias __sig_atomic_t = int;
-    struct __locale_struct
-    {
-        __locale_data*[13] __locales;
-        const(ushort)* __ctype_b;
-        const(int)* __ctype_tolower;
-        const(int)* __ctype_toupper;
-        const(char)*[13] __names;
-    }
-    alias __locale_t = __locale_struct*;
-    struct __sigset_t
-    {
-        c_ulong[16] __val;
-    }
-    alias clock_t = c_long;
-    int posix_memalign(void**, c_ulong, c_ulong) @nogc nothrow;
-    alias clockid_t = int;
-    alias locale_t = __locale_struct*;
-    alias sigset_t = __sigset_t;
-    struct itimerspec
-    {
-        timespec it_interval;
-        timespec it_value;
-    }
-    struct sched_param
-    {
-        int sched_priority;
-    }
-    struct timespec
-    {
-        c_long tv_sec;
-        c_long tv_nsec;
-    }
-    void* valloc(c_ulong) @nogc nothrow;
-    struct timeval
-    {
-        c_long tv_sec;
-        c_long tv_usec;
-    }
-    struct tm
-    {
-        int tm_sec;
-        int tm_min;
-        int tm_hour;
-        int tm_mday;
-        int tm_mon;
-        int tm_year;
-        int tm_wday;
-        int tm_yday;
-        int tm_isdst;
-        c_long tm_gmtoff;
-        const(char)* tm_zone;
-    }
-    alias time_t = c_long;
-    alias timer_t = void*;
-    void free(void*) @nogc nothrow;
-    void* reallocarray(void*, c_ulong, c_ulong) @nogc nothrow;
-    void* realloc(void*, c_ulong) @nogc nothrow;
-    void* calloc(c_ulong, c_ulong) @nogc nothrow;
-    void* malloc(c_ulong) @nogc nothrow;
-    int lcong48_r(ushort*, drand48_data*) @nogc nothrow;
-    int seed48_r(ushort*, drand48_data*) @nogc nothrow;
-    int srand48_r(c_long, drand48_data*) @nogc nothrow;
-    int jrand48_r(ushort*, drand48_data*, c_long*) @nogc nothrow;
-    int mrand48_r(drand48_data*, c_long*) @nogc nothrow;
-    int nrand48_r(ushort*, drand48_data*, c_long*) @nogc nothrow;
-    static ushort __uint16_identity(ushort) @nogc nothrow;
-    static uint __uint32_identity(uint) @nogc nothrow;
-    static c_ulong __uint64_identity(c_ulong) @nogc nothrow;
-    int lrand48_r(drand48_data*, c_long*) @nogc nothrow;
-    int erand48_r(ushort*, drand48_data*, double*) @nogc nothrow;
-    int drand48_r(drand48_data*, double*) @nogc nothrow;
-    struct drand48_data
-    {
-        ushort[3] __x;
-        ushort[3] __old_x;
-        ushort __c;
-        ushort __init;
-        ulong __a;
-    }
-    void lcong48(ushort*) @nogc nothrow;
-    ushort* seed48(ushort*) @nogc nothrow;
-    void srand48(c_long) @nogc nothrow;
-    c_long jrand48(ushort*) @nogc nothrow;
-    c_long mrand48() @nogc nothrow;
-    c_long nrand48(ushort*) @nogc nothrow;
-    c_long lrand48() @nogc nothrow;
-    double erand48(ushort*) @nogc nothrow;
-    double drand48() @nogc nothrow;
-    int rand_r(uint*) @nogc nothrow;
-    void srand(uint) @nogc nothrow;
-    int rand() @nogc nothrow;
-    int setstate_r(char*, random_data*) @nogc nothrow;
-    int initstate_r(uint, char*, c_ulong, random_data*) @nogc nothrow;
-    int srandom_r(uint, random_data*) @nogc nothrow;
-    int random_r(random_data*, int*) @nogc nothrow;
-    struct random_data
-    {
-        int* fptr;
-        int* rptr;
-        int* state;
-        int rand_type;
-        int rand_deg;
-        int rand_sep;
-        int* end_ptr;
-    }
-    char* setstate(char*) @nogc nothrow;
-    char* initstate(uint, char*, c_ulong) @nogc nothrow;
-    void srandom(uint) @nogc nothrow;
-    c_long random() @nogc nothrow;
-    c_long a64l(const(char)*) @nogc nothrow;
-    char* l64a(c_long) @nogc nothrow;
-    real strtof64x_l(const(char)*, char**, __locale_struct*) @nogc nothrow;
-    double strtof32x_l(const(char)*, char**, __locale_struct*) @nogc nothrow;
-    double strtof64_l(const(char)*, char**, __locale_struct*) @nogc nothrow;
-    float strtof32_l(const(char)*, char**, __locale_struct*) @nogc nothrow;
-    real strtold_l(const(char)*, char**, __locale_struct*) @nogc nothrow;
-    float strtof_l(const(char)*, char**, __locale_struct*) @nogc nothrow;
-    double strtod_l(const(char)*, char**, __locale_struct*) @nogc nothrow;
-    ulong strtoull_l(const(char)*, char**, int, __locale_struct*) @nogc nothrow;
-    long strtoll_l(const(char)*, char**, int, __locale_struct*) @nogc nothrow;
-    c_ulong strtoul_l(const(char)*, char**, int, __locale_struct*) @nogc nothrow;
-    c_long strtol_l(const(char)*, char**, int, __locale_struct*) @nogc nothrow;
-    int strfromf64x(char*, c_ulong, const(char)*, real) @nogc nothrow;
+    
     void grpc_metadata_array_init(grpc_metadata_array*) @nogc nothrow;
     void grpc_metadata_array_destroy(grpc_metadata_array*) @nogc nothrow;
     void grpc_call_details_init(grpc_call_details*) @nogc nothrow;
@@ -921,16 +412,12 @@ extern(C)
     }
     enum UDS = _Anonymous_23.UDS;
     enum LOCAL_TCP = _Anonymous_23.LOCAL_TCP;
-    int strfromf32(char*, c_ulong, const(char)*, float) @nogc nothrow;
     c_long gpr_atm_no_barrier_clamped_add(c_long*, c_long, c_long, c_long) @nogc nothrow;
     alias gpr_atm = c_long;
-    int strfroml(char*, c_ulong, const(char)*, real) @nogc nothrow;
-    int strfromf(char*, c_ulong, const(char)*, float) @nogc nothrow;
     static int gpr_atm_no_barrier_cas(c_long*, c_long, c_long) @nogc nothrow;
     static int gpr_atm_acq_cas(c_long*, c_long, c_long) @nogc nothrow;
     static int gpr_atm_rel_cas(c_long*, c_long, c_long) @nogc nothrow;
     static int gpr_atm_full_cas(c_long*, c_long, c_long) @nogc nothrow;
-    int strfromd(char*, c_ulong, const(char)*, double) @nogc nothrow;
     grpc_byte_buffer* grpc_raw_byte_buffer_create(grpc_slice*, c_ulong) @nogc nothrow;
     grpc_byte_buffer* grpc_raw_compressed_byte_buffer_create(grpc_slice*, c_ulong, grpc_compression_algorithm) @nogc nothrow;
     grpc_byte_buffer* grpc_byte_buffer_copy(grpc_byte_buffer*) @nogc nothrow;
@@ -972,8 +459,6 @@ extern(C)
         }
         grpc_byte_buffer_reader_current current;
     }
-    ulong strtoull(const(char)*, char**, int) @nogc nothrow;
-    long strtoll(const(char)*, char**, int) @nogc nothrow;
     alias grpc_compression_algorithm = _Anonymous_25;
     enum _Anonymous_25
     {
@@ -1032,14 +517,6 @@ extern(C)
     enum GRPC_CHANNEL_READY = _Anonymous_27.GRPC_CHANNEL_READY;
     enum GRPC_CHANNEL_TRANSIENT_FAILURE = _Anonymous_27.GRPC_CHANNEL_TRANSIENT_FAILURE;
     enum GRPC_CHANNEL_SHUTDOWN = _Anonymous_27.GRPC_CHANNEL_SHUTDOWN;
-    ulong strtouq(const(char)*, char**, int) @nogc nothrow;
-    long strtoq(const(char)*, char**, int) @nogc nothrow;
-    c_ulong strtoul(const(char)*, char**, int) @nogc nothrow;
-    c_long strtol(const(char)*, char**, int) @nogc nothrow;
-    real strtof64x(const(char)*, char**) @nogc nothrow;
-    double strtof32x(const(char)*, char**) @nogc nothrow;
-    double strtof64(const(char)*, char**) @nogc nothrow;
-    float strtof32(const(char)*, char**) @nogc nothrow;
     alias gpr_clock_type = _Anonymous_28;
     enum _Anonymous_28
     {
@@ -1108,29 +585,6 @@ extern(C)
     {
         c_ulong num_args;
         grpc_arg* args;
-    }
-    real strtold(const(char)*, char**) @nogc nothrow;
-    float strtof(const(char)*, char**) @nogc nothrow;
-    double strtod(const(char)*, char**) @nogc nothrow;
-    long atoll(const(char)*) @nogc nothrow;
-    c_long atol(const(char)*) @nogc nothrow;
-    int atoi(const(char)*) @nogc nothrow;
-    double atof(const(char)*) @nogc nothrow;
-    c_ulong __ctype_get_mb_cur_max() @nogc nothrow;
-    struct lldiv_t
-    {
-        long quot;
-        long rem;
-    }
-    struct ldiv_t
-    {
-        c_long quot;
-        c_long rem;
-    }
-    struct div_t
-    {
-        int quot;
-        int rem;
     }
     alias uintmax_t = c_ulong;
     alias intmax_t = c_long;
@@ -1361,8 +815,6 @@ extern(C)
     enum GPR_LOG_SEVERITY_INFO = gpr_log_severity.GPR_LOG_SEVERITY_INFO;
     enum GPR_LOG_SEVERITY_ERROR = gpr_log_severity.GPR_LOG_SEVERITY_ERROR;
     const(char)* gpr_log_severity_string(gpr_log_severity) @nogc nothrow;
-    int sched_getaffinity(int, c_ulong, cpu_set_t*) @nogc nothrow;
-    int sched_setaffinity(int, c_ulong, const(cpu_set_t)*) @nogc nothrow;
     void gpr_log(const(char)*, int, gpr_log_severity, const(char)*, ...) @nogc nothrow;
     int gpr_should_log(gpr_log_severity) @nogc nothrow;
     void gpr_log_message(const(char)*, int, gpr_log_severity, const(char)*) @nogc nothrow;
@@ -1377,26 +829,6 @@ extern(C)
     }
     alias gpr_log_func = void function(gpr_log_func_args*);
     void gpr_set_log_function(void function(gpr_log_func_args*)) @nogc nothrow;
-    int sched_rr_get_interval(int, timespec*) @nogc nothrow;
-    int sched_get_priority_min(int) @nogc nothrow;
-    int sched_get_priority_max(int) @nogc nothrow;
-    int sched_yield() @nogc nothrow;
-    int sched_getscheduler(int) @nogc nothrow;
-    int sched_setscheduler(int, int, const(sched_param)*) @nogc nothrow;
-    int sched_getparam(int, sched_param*) @nogc nothrow;
-    int sched_setparam(int, const(sched_param)*) @nogc nothrow;
-    alias pid_t = int;
-    int pthread_atfork(void function(), void function(), void function()) @nogc nothrow;
-    int pthread_getcpuclockid(c_ulong, int*) @nogc nothrow;
-    int pthread_setspecific(uint, const(void)*) @nogc nothrow;
-    void* pthread_getspecific(uint) @nogc nothrow;
-    int pthread_key_delete(uint) @nogc nothrow;
-    int pthread_key_create(uint*, void function(void*)) @nogc nothrow;
-    int pthread_barrierattr_setpshared(pthread_barrierattr_t*, int) @nogc nothrow;
-    int pthread_barrierattr_getpshared(const(pthread_barrierattr_t)*, int*) @nogc nothrow;
-    int pthread_barrierattr_destroy(pthread_barrierattr_t*) @nogc nothrow;
-    int pthread_barrierattr_init(pthread_barrierattr_t*) @nogc nothrow;
-    int pthread_barrier_wait(pthread_barrier_t*) @nogc nothrow;
     struct grpc_slice
     {
         grpc_slice_refcount* refcount;
@@ -1418,7 +850,6 @@ extern(C)
         grpc_slice_data data;
     }
     struct grpc_slice_refcount;
-    int pthread_barrier_destroy(pthread_barrier_t*) @nogc nothrow;
     struct grpc_slice_buffer
     {
         grpc_slice* base_slices;
@@ -1428,9 +859,6 @@ extern(C)
         c_ulong length;
         grpc_slice[8] inlined;
     }
-    int pthread_barrier_init(pthread_barrier_t*, const(pthread_barrierattr_t)*, uint) @nogc nothrow;
-    int pthread_spin_unlock(int*) @nogc nothrow;
-    int pthread_spin_trylock(int*) @nogc nothrow;
     alias grpc_status_code = _Anonymous_36;
     enum _Anonymous_36
     {
@@ -1606,249 +1034,6 @@ extern(C)
     int gpr_time_similar(gpr_timespec, gpr_timespec, gpr_timespec) @nogc nothrow;
     void gpr_sleep_until(gpr_timespec) @nogc nothrow;
     double gpr_timespec_to_micros(gpr_timespec) @nogc nothrow;
-    int pthread_condattr_destroy(pthread_condattr_t*) @nogc nothrow;
-    enum _Anonymous_38
-    {
-        PTHREAD_CREATE_JOINABLE = 0,
-        PTHREAD_CREATE_DETACHED = 1,
-    }
-    enum PTHREAD_CREATE_JOINABLE = _Anonymous_38.PTHREAD_CREATE_JOINABLE;
-    enum PTHREAD_CREATE_DETACHED = _Anonymous_38.PTHREAD_CREATE_DETACHED;
-    int pthread_condattr_init(pthread_condattr_t*) @nogc nothrow;
-    enum _Anonymous_39
-    {
-        PTHREAD_MUTEX_TIMED_NP = 0,
-        PTHREAD_MUTEX_RECURSIVE_NP = 1,
-        PTHREAD_MUTEX_ERRORCHECK_NP = 2,
-        PTHREAD_MUTEX_ADAPTIVE_NP = 3,
-        PTHREAD_MUTEX_NORMAL = 0,
-        PTHREAD_MUTEX_RECURSIVE = 1,
-        PTHREAD_MUTEX_ERRORCHECK = 2,
-        PTHREAD_MUTEX_DEFAULT = 0,
-        PTHREAD_MUTEX_FAST_NP = 0,
-    }
-    enum PTHREAD_MUTEX_TIMED_NP = _Anonymous_39.PTHREAD_MUTEX_TIMED_NP;
-    enum PTHREAD_MUTEX_RECURSIVE_NP = _Anonymous_39.PTHREAD_MUTEX_RECURSIVE_NP;
-    enum PTHREAD_MUTEX_ERRORCHECK_NP = _Anonymous_39.PTHREAD_MUTEX_ERRORCHECK_NP;
-    enum PTHREAD_MUTEX_ADAPTIVE_NP = _Anonymous_39.PTHREAD_MUTEX_ADAPTIVE_NP;
-    enum PTHREAD_MUTEX_NORMAL = _Anonymous_39.PTHREAD_MUTEX_NORMAL;
-    enum PTHREAD_MUTEX_RECURSIVE = _Anonymous_39.PTHREAD_MUTEX_RECURSIVE;
-    enum PTHREAD_MUTEX_ERRORCHECK = _Anonymous_39.PTHREAD_MUTEX_ERRORCHECK;
-    enum PTHREAD_MUTEX_DEFAULT = _Anonymous_39.PTHREAD_MUTEX_DEFAULT;
-    enum PTHREAD_MUTEX_FAST_NP = _Anonymous_39.PTHREAD_MUTEX_FAST_NP;
-    enum _Anonymous_40
-    {
-        PTHREAD_MUTEX_STALLED = 0,
-        PTHREAD_MUTEX_STALLED_NP = 0,
-        PTHREAD_MUTEX_ROBUST = 1,
-        PTHREAD_MUTEX_ROBUST_NP = 1,
-    }
-    enum PTHREAD_MUTEX_STALLED = _Anonymous_40.PTHREAD_MUTEX_STALLED;
-    enum PTHREAD_MUTEX_STALLED_NP = _Anonymous_40.PTHREAD_MUTEX_STALLED_NP;
-    enum PTHREAD_MUTEX_ROBUST = _Anonymous_40.PTHREAD_MUTEX_ROBUST;
-    enum PTHREAD_MUTEX_ROBUST_NP = _Anonymous_40.PTHREAD_MUTEX_ROBUST_NP;
-    enum _Anonymous_41
-    {
-        PTHREAD_PRIO_NONE = 0,
-        PTHREAD_PRIO_INHERIT = 1,
-        PTHREAD_PRIO_PROTECT = 2,
-    }
-    enum PTHREAD_PRIO_NONE = _Anonymous_41.PTHREAD_PRIO_NONE;
-    enum PTHREAD_PRIO_INHERIT = _Anonymous_41.PTHREAD_PRIO_INHERIT;
-    enum PTHREAD_PRIO_PROTECT = _Anonymous_41.PTHREAD_PRIO_PROTECT;
-    int pthread_cond_clockwait(pthread_cond_t*, pthread_mutex_t*, int, const(timespec)*) @nogc nothrow;
-    int pthread_cond_timedwait(pthread_cond_t*, pthread_mutex_t*, const(timespec)*) @nogc nothrow;
-    enum _Anonymous_42
-    {
-        PTHREAD_RWLOCK_PREFER_READER_NP = 0,
-        PTHREAD_RWLOCK_PREFER_WRITER_NP = 1,
-        PTHREAD_RWLOCK_PREFER_WRITER_NONRECURSIVE_NP = 2,
-        PTHREAD_RWLOCK_DEFAULT_NP = 0,
-    }
-    enum PTHREAD_RWLOCK_PREFER_READER_NP = _Anonymous_42.PTHREAD_RWLOCK_PREFER_READER_NP;
-    enum PTHREAD_RWLOCK_PREFER_WRITER_NP = _Anonymous_42.PTHREAD_RWLOCK_PREFER_WRITER_NP;
-    enum PTHREAD_RWLOCK_PREFER_WRITER_NONRECURSIVE_NP = _Anonymous_42.PTHREAD_RWLOCK_PREFER_WRITER_NONRECURSIVE_NP;
-    enum PTHREAD_RWLOCK_DEFAULT_NP = _Anonymous_42.PTHREAD_RWLOCK_DEFAULT_NP;
-    int pthread_cond_wait(pthread_cond_t*, pthread_mutex_t*) @nogc nothrow;
-    enum _Anonymous_43
-    {
-        PTHREAD_INHERIT_SCHED = 0,
-        PTHREAD_EXPLICIT_SCHED = 1,
-    }
-    enum PTHREAD_INHERIT_SCHED = _Anonymous_43.PTHREAD_INHERIT_SCHED;
-    enum PTHREAD_EXPLICIT_SCHED = _Anonymous_43.PTHREAD_EXPLICIT_SCHED;
-    enum _Anonymous_44
-    {
-        PTHREAD_SCOPE_SYSTEM = 0,
-        PTHREAD_SCOPE_PROCESS = 1,
-    }
-    enum PTHREAD_SCOPE_SYSTEM = _Anonymous_44.PTHREAD_SCOPE_SYSTEM;
-    enum PTHREAD_SCOPE_PROCESS = _Anonymous_44.PTHREAD_SCOPE_PROCESS;
-    int pthread_cond_broadcast(pthread_cond_t*) @nogc nothrow;
-    enum _Anonymous_45
-    {
-        PTHREAD_PROCESS_PRIVATE = 0,
-        PTHREAD_PROCESS_SHARED = 1,
-    }
-    enum PTHREAD_PROCESS_PRIVATE = _Anonymous_45.PTHREAD_PROCESS_PRIVATE;
-    enum PTHREAD_PROCESS_SHARED = _Anonymous_45.PTHREAD_PROCESS_SHARED;
-    int pthread_cond_signal(pthread_cond_t*) @nogc nothrow;
-    struct _pthread_cleanup_buffer
-    {
-        void function(void*) __routine;
-        void* __arg;
-        int __canceltype;
-        _pthread_cleanup_buffer* __prev;
-    }
-    enum _Anonymous_46
-    {
-        PTHREAD_CANCEL_ENABLE = 0,
-        PTHREAD_CANCEL_DISABLE = 1,
-    }
-    enum PTHREAD_CANCEL_ENABLE = _Anonymous_46.PTHREAD_CANCEL_ENABLE;
-    enum PTHREAD_CANCEL_DISABLE = _Anonymous_46.PTHREAD_CANCEL_DISABLE;
-    int pthread_cond_destroy(pthread_cond_t*) @nogc nothrow;
-    enum _Anonymous_47
-    {
-        PTHREAD_CANCEL_DEFERRED = 0,
-        PTHREAD_CANCEL_ASYNCHRONOUS = 1,
-    }
-    enum PTHREAD_CANCEL_DEFERRED = _Anonymous_47.PTHREAD_CANCEL_DEFERRED;
-    enum PTHREAD_CANCEL_ASYNCHRONOUS = _Anonymous_47.PTHREAD_CANCEL_ASYNCHRONOUS;
-    int pthread_cond_init(pthread_cond_t*, const(pthread_condattr_t)*) @nogc nothrow;
-    int pthread_create(c_ulong*, const(pthread_attr_t)*, void* function(void*), void*) @nogc nothrow;
-    void pthread_exit(void*) @nogc nothrow;
-    int pthread_join(c_ulong, void**) @nogc nothrow;
-    int pthread_tryjoin_np(c_ulong, void**) @nogc nothrow;
-    int pthread_timedjoin_np(c_ulong, void**, const(timespec)*) @nogc nothrow;
-    int pthread_clockjoin_np(c_ulong, void**, int, const(timespec)*) @nogc nothrow;
-    int pthread_detach(c_ulong) @nogc nothrow;
-    c_ulong pthread_self() @nogc nothrow;
-    int pthread_equal(c_ulong, c_ulong) @nogc nothrow;
-    int pthread_attr_init(pthread_attr_t*) @nogc nothrow;
-    int pthread_attr_destroy(pthread_attr_t*) @nogc nothrow;
-    int pthread_attr_getdetachstate(const(pthread_attr_t)*, int*) @nogc nothrow;
-    int pthread_attr_setdetachstate(pthread_attr_t*, int) @nogc nothrow;
-    int pthread_attr_getguardsize(const(pthread_attr_t)*, c_ulong*) @nogc nothrow;
-    int pthread_attr_setguardsize(pthread_attr_t*, c_ulong) @nogc nothrow;
-    int pthread_attr_getschedparam(const(pthread_attr_t)*, sched_param*) @nogc nothrow;
-    int pthread_attr_setschedparam(pthread_attr_t*, const(sched_param)*) @nogc nothrow;
-    int pthread_attr_getschedpolicy(const(pthread_attr_t)*, int*) @nogc nothrow;
-    int pthread_attr_setschedpolicy(pthread_attr_t*, int) @nogc nothrow;
-    int pthread_attr_getinheritsched(const(pthread_attr_t)*, int*) @nogc nothrow;
-    int pthread_attr_setinheritsched(pthread_attr_t*, int) @nogc nothrow;
-    int pthread_attr_getscope(const(pthread_attr_t)*, int*) @nogc nothrow;
-    int pthread_attr_setscope(pthread_attr_t*, int) @nogc nothrow;
-    int pthread_attr_getstackaddr(const(pthread_attr_t)*, void**) @nogc nothrow;
-    int pthread_attr_setstackaddr(pthread_attr_t*, void*) @nogc nothrow;
-    int pthread_attr_getstacksize(const(pthread_attr_t)*, c_ulong*) @nogc nothrow;
-    int pthread_attr_setstacksize(pthread_attr_t*, c_ulong) @nogc nothrow;
-    int pthread_attr_getstack(const(pthread_attr_t)*, void**, c_ulong*) @nogc nothrow;
-    int pthread_attr_setstack(pthread_attr_t*, void*, c_ulong) @nogc nothrow;
-    int pthread_attr_setaffinity_np(pthread_attr_t*, c_ulong, const(cpu_set_t)*) @nogc nothrow;
-    int pthread_attr_getaffinity_np(const(pthread_attr_t)*, c_ulong, cpu_set_t*) @nogc nothrow;
-    int pthread_getattr_default_np(pthread_attr_t*) @nogc nothrow;
-    int pthread_setattr_default_np(const(pthread_attr_t)*) @nogc nothrow;
-    int pthread_getattr_np(c_ulong, pthread_attr_t*) @nogc nothrow;
-    int pthread_setschedparam(c_ulong, int, const(sched_param)*) @nogc nothrow;
-    int pthread_getschedparam(c_ulong, int*, sched_param*) @nogc nothrow;
-    int pthread_setschedprio(c_ulong, int) @nogc nothrow;
-    int pthread_getname_np(c_ulong, char*, c_ulong) @nogc nothrow;
-    int pthread_setname_np(c_ulong, const(char)*) @nogc nothrow;
-    int pthread_getconcurrency() @nogc nothrow;
-    int pthread_setconcurrency(int) @nogc nothrow;
-    int pthread_yield() @nogc nothrow;
-    int pthread_setaffinity_np(c_ulong, c_ulong, const(cpu_set_t)*) @nogc nothrow;
-    int pthread_getaffinity_np(c_ulong, c_ulong, cpu_set_t*) @nogc nothrow;
-    int pthread_once(int*, void function()) @nogc nothrow;
-    int pthread_setcancelstate(int, int*) @nogc nothrow;
-    int pthread_setcanceltype(int, int*) @nogc nothrow;
-    int pthread_cancel(c_ulong) @nogc nothrow;
-    void pthread_testcancel() @nogc nothrow;
-    struct __pthread_unwind_buf_t
-    {
-        static struct _Anonymous_48
-        {
-            c_long[8] __cancel_jmp_buf;
-            int __mask_was_saved;
-        }
-        _Anonymous_48[1] __cancel_jmp_buf;
-        void*[4] __pad;
-    }
-    int pthread_rwlockattr_setkind_np(pthread_rwlockattr_t*, int) @nogc nothrow;
-    struct __pthread_cleanup_frame
-    {
-        void function(void*) __cancel_routine;
-        void* __cancel_arg;
-        int __do_it;
-        int __cancel_type;
-    }
-    void __pthread_register_cancel(__pthread_unwind_buf_t*) @nogc nothrow;
-    void __pthread_unregister_cancel(__pthread_unwind_buf_t*) @nogc nothrow;
-    int pthread_rwlockattr_getkind_np(const(pthread_rwlockattr_t)*, int*) @nogc nothrow;
-    void __pthread_register_cancel_defer(__pthread_unwind_buf_t*) @nogc nothrow;
-    void __pthread_unregister_cancel_restore(__pthread_unwind_buf_t*) @nogc nothrow;
-    void __pthread_unwind_next(__pthread_unwind_buf_t*) @nogc nothrow;
-    struct __jmp_buf_tag;
-    int __sigsetjmp(__jmp_buf_tag*, int) @nogc nothrow;
-    int pthread_mutex_init(pthread_mutex_t*, const(pthread_mutexattr_t)*) @nogc nothrow;
-    int pthread_mutex_destroy(pthread_mutex_t*) @nogc nothrow;
-    int pthread_mutex_trylock(pthread_mutex_t*) @nogc nothrow;
-    int pthread_mutex_lock(pthread_mutex_t*) @nogc nothrow;
-    int pthread_mutex_timedlock(pthread_mutex_t*, const(timespec)*) @nogc nothrow;
-    int pthread_mutex_clocklock(pthread_mutex_t*, int, const(timespec)*) @nogc nothrow;
-    int pthread_mutex_unlock(pthread_mutex_t*) @nogc nothrow;
-    int pthread_mutex_getprioceiling(const(pthread_mutex_t)*, int*) @nogc nothrow;
-    int pthread_mutex_setprioceiling(pthread_mutex_t*, int, int*) @nogc nothrow;
-    int pthread_mutex_consistent(pthread_mutex_t*) @nogc nothrow;
-    int pthread_mutex_consistent_np(pthread_mutex_t*) @nogc nothrow;
-    int pthread_mutexattr_init(pthread_mutexattr_t*) @nogc nothrow;
-    int pthread_mutexattr_destroy(pthread_mutexattr_t*) @nogc nothrow;
-    int pthread_mutexattr_getpshared(const(pthread_mutexattr_t)*, int*) @nogc nothrow;
-    int pthread_mutexattr_setpshared(pthread_mutexattr_t*, int) @nogc nothrow;
-    int pthread_mutexattr_gettype(const(pthread_mutexattr_t)*, int*) @nogc nothrow;
-    int pthread_mutexattr_settype(pthread_mutexattr_t*, int) @nogc nothrow;
-    int pthread_mutexattr_getprotocol(const(pthread_mutexattr_t)*, int*) @nogc nothrow;
-    int pthread_mutexattr_setprotocol(pthread_mutexattr_t*, int) @nogc nothrow;
-    int pthread_mutexattr_getprioceiling(const(pthread_mutexattr_t)*, int*) @nogc nothrow;
-    int pthread_mutexattr_setprioceiling(pthread_mutexattr_t*, int) @nogc nothrow;
-    int pthread_mutexattr_getrobust(const(pthread_mutexattr_t)*, int*) @nogc nothrow;
-    int pthread_mutexattr_getrobust_np(const(pthread_mutexattr_t)*, int*) @nogc nothrow;
-    int pthread_mutexattr_setrobust(pthread_mutexattr_t*, int) @nogc nothrow;
-    int pthread_mutexattr_setrobust_np(pthread_mutexattr_t*, int) @nogc nothrow;
-    int pthread_rwlock_init(pthread_rwlock_t*, const(pthread_rwlockattr_t)*) @nogc nothrow;
-    int pthread_rwlock_destroy(pthread_rwlock_t*) @nogc nothrow;
-    int pthread_rwlock_rdlock(pthread_rwlock_t*) @nogc nothrow;
-    int pthread_rwlock_tryrdlock(pthread_rwlock_t*) @nogc nothrow;
-    int pthread_rwlock_timedrdlock(pthread_rwlock_t*, const(timespec)*) @nogc nothrow;
-    int pthread_rwlock_clockrdlock(pthread_rwlock_t*, int, const(timespec)*) @nogc nothrow;
-    int pthread_rwlock_wrlock(pthread_rwlock_t*) @nogc nothrow;
-    int pthread_rwlock_trywrlock(pthread_rwlock_t*) @nogc nothrow;
-    int pthread_rwlock_timedwrlock(pthread_rwlock_t*, const(timespec)*) @nogc nothrow;
-    int pthread_rwlock_clockwrlock(pthread_rwlock_t*, int, const(timespec)*) @nogc nothrow;
-    int pthread_rwlock_unlock(pthread_rwlock_t*) @nogc nothrow;
-    int pthread_rwlockattr_init(pthread_rwlockattr_t*) @nogc nothrow;
-    int pthread_rwlockattr_destroy(pthread_rwlockattr_t*) @nogc nothrow;
-    int pthread_rwlockattr_getpshared(const(pthread_rwlockattr_t)*, int*) @nogc nothrow;
-    int pthread_rwlockattr_setpshared(pthread_rwlockattr_t*, int) @nogc nothrow;
-    static if(!is(typeof(PTHREAD_ONCE_INIT))) {
-        enum PTHREAD_ONCE_INIT = 0;
-    }
-    static if(!is(typeof(_PTHREAD_H))) {
-        enum _PTHREAD_H = 1;
-    }
-
-
-
-
-
-
-    static if(!is(typeof(LINUX_VERSION_CODE))) {
-        enum LINUX_VERSION_CODE = 328721;
-    }
-
-
-
 
     static if(!is(typeof(GPR_US_PER_MS))) {
         enum GPR_US_PER_MS = 1000;
