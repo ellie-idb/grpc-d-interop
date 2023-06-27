@@ -399,7 +399,7 @@ void grpcwrap_channel_args_set_string(
   assert(index < args.num_args);
   args.args[index].type = GRPC_ARG_STRING;
   args.args[index].key = gpr_strdup(key);
-  args.args[index].value.string = gpr_strdup(value);
+  args.args[index].value.string_ = gpr_strdup(value);
 }
 
 void grpcwrap_channel_args_set_integer(
@@ -428,7 +428,7 @@ void grpcwrap_channel_args_destroy(grpc_channel_args* args) {
     for (i = 0; i < args.num_args; i++) {
       gpr_free(args.args[i].key);
       if (args.args[i].type == GRPC_ARG_STRING) {
-        gpr_free(args.args[i].value.string);
+        gpr_free(args.args[i].value.string_);
       }
       if (args.args[i].type == GRPC_ARG_POINTER) {
         args.args[i].value.pointer.vtable.destroy(
@@ -749,33 +749,6 @@ grpc_call_error grpcwrap_server_request_call(grpc_server* server, grpc_completio
                              grpcwrap_request_call_context* ctx, void* tag) @nogc nothrow {
   return grpc_server_request_call(server, &(ctx.call), &(ctx.call_details),
                                   &(ctx.request_metadata), cq, cq, tag);
-}
-
-/* Security */
-
-static char* default_pem_root_certs = null;
-
-extern(C) {
-    static grpc_ssl_roots_override_result override_ssl_roots_handler(
-        char** pem_root_certs) @nogc nothrow {
-      if (!default_pem_root_certs) {
-        *pem_root_certs = null;
-        return GRPC_SSL_ROOTS_OVERRIDE_FAIL_PERMANENTLY;
-      }
-      *pem_root_certs = gpr_strdup(default_pem_root_certs);
-      return GRPC_SSL_ROOTS_OVERRIDE_OK;
-    }
-}
-
-void grpcwrap_override_default_ssl_roots(const(char*) pem_root_certs) @nogc nothrow {
-  /*
-   * This currently wastes ~300kB of memory by keeping a copy of roots
-   * in a static variable, but for desktop/server use, the overhead
-   * is negligible. In the future, we might want to change the behavior
-   * for mobile (e.g. Xamarin).
-   */
-  default_pem_root_certs = gpr_strdup(pem_root_certs);
-  grpc_set_ssl_roots_override_callback(&override_ssl_roots_handler);
 }
 
 grpc_channel_credentials* grpcwrap_ssl_credentials_create(const(char*) pem_root_certs,
